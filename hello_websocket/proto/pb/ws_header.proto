@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option go_package = "./platform_proto";
+
+
+message Message {
+  string cmd = 1;          // 指令類型，例如 "join_room"、"start_game"
+  bytes payload = 2;       // 內層資料序列化後的 bytes
+}
+
+message JoinRoomReq {
+  string room_id = 1;
+}
+
+message JoinRoomResp {
+  string status = 1;
+  string message = 2;
+}

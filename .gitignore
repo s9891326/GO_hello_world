@@ -1,0 +1,14 @@
+caddy_data*
+*debug*
+caddy_config
+vendor
+
+resource/rpc/go/
+ref
+.vscode
+.idea
+tsproto
+*.exe
+data_pg
+conf_nginx/Client
+data_gitea

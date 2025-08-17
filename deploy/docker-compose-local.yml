@@ -1,0 +1,145 @@
+version: '3.8'
+
+services:
+#  django:
+#    image: csgo:${VERSION}
+#    container_name: django_app
+#    volumes:
+#      - ../logs:/data/code/logs
+#      - ../static:/data/code/static
+#      - ../media:/data/code/media
+#      # 方便測試所以讓image內的檔案映射到當前目錄
+#      - ../config:/data/code/config
+#      - ../lang:/data/code/lang
+#      - ../CSGO_backend:/data/code/CSGO_backend
+#      - ../mg:/data/code/mg
+#      - ../frontend:/data/code/frontend
+#      - ../share:/data/code/share
+#      - ../utils:/data/code/utils
+#    ports:
+#      - "8000:8000"
+#    depends_on:
+#      - postgres
+#      - mongodb
+#      - redis
+##      - celery_worker
+##      - celery_beat
+#    environment:
+#      - POSTGRES_DB=csgo
+#      - POSTGRES_USER=root
+#      - POSTGRES_PASSWORD=Root&123
+#      - DJANGO_DB_HOST=postgres
+#      - DJANGO_DB_PORT=5432
+#      - REDIS_HOST=redis
+#      - MONGO_HOST=mongodb
+#    deploy:
+#      replicas: 2
+#      update_config:
+#        parallelism: 1
+#        delay: 10s
+#      resources:
+#        limits:
+#          cpus: "0.5"
+#          memory: 1G
+#        reservations:
+#          cpus: "0.1"
+#          memory: 256M
+#      restart_policy:
+#        condition: on-failure
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+#      interval: 10s  # 兩次檢測的時間間隔
+#      timeout: 5s
+#      retries: 3
+#      start_period: 10s  # 容器啟動多久，會開始第一次檢測
+
+  postgres:
+    image: postgres:15
+    container_name: postgres_db
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=go2
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=Root&123
+    ports:
+      - "5432:5432"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+#  gitea:
+#    container_name: mygitea
+#    image: gitea/gitea:1.12.3
+#    restart: always
+#    volumes:
+#      - ./:/data
+#    ports:
+#      - "3000:3000"
+#      - "22:22"
+#    environment:
+#      - ROOT_URL=http://mygitea/
+
+#  mongodb:
+#    image: mongo:6.0
+#    container_name: mongo_db
+#    ports:
+#      - "27017:27017"
+#    environment:
+#      - MONGO_INITDB_ROOT_USERNAME=qf
+#      - MONGO_INITDB_ROOT_PASSWORD=mgqf2025
+#      - MONGO_INITDB_DATABASE=csgo_statistic
+#    volumes:
+#      - mongo_data:/data/db
+#    deploy:
+#      replicas: 1
+#      restart_policy:
+#        condition: on-failure
+
+  redis:
+    image: redis:7.0
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+#  celery_worker:
+#    image: csgo:${VERSION}
+#    container_name: celery_worker
+#    depends_on:
+#      - redis
+#      - django
+#    command: poetry run celery -A CSGO_backend worker -c 1 --loglevel=info --time-limit=10
+#    environment:
+#      - REDIS_HOST=redis
+#    deploy:
+#      replicas: 1
+#      restart_policy:
+#        condition: on-failure
+#
+#  celery_beat:
+#    image: csgo:${VERSION}
+#    container_name: celery_beat
+#    depends_on:
+#      - redis
+#      - django
+#      - celery_worker
+#    command: poetry run celery -A CSGO_backend beat --loglevel=info
+#    environment:
+#      - REDIS_HOST=redis
+#    deploy:
+#      replicas: 1
+#      restart_policy:
+#        condition: on-failure
+
+volumes:
+  postgres_data:
+  mongo_data:
+  redis_data:

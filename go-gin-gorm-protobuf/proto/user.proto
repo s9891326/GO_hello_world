@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "./example_pb";
+
+// 定義一個 UserService，提供 GetUser 和 CreateUser 兩個 RPC 方法
+service UserService {
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
+}
+
+message GetUserRequest {
+  string user_id = 1;
+}
+
+message GetUserResponse {
+  string user_id = 1;
+  string name = 2;
+  int32 age = 3;
+}
+
+// CreateUser 請求與回應
+message CreateUserRequest {
+  string name = 1;
+  int32 age = 2;
+}
+
+message CreateUserResponse {
+  string user_id = 1;
+}
+
+message User {
+  int64 id = 1;
+  string name = 2;
+  string email = 3;
+}
