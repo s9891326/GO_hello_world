@@ -92,6 +92,7 @@ Requests/sec:   8204.04
 Transfer/sec:      1.29MB
 
 pprof: 效能測試，檢測
+查看 goroutine 數量是否異常增長
 go tool pprof http://127.0.0.1:6060/debug/pprof/profile?seconds=30
 Fetching profile over HTTP from http://127.0.0.1:6060/debug/pprof/profile?seconds=30
 Saved profile in C:\Users\eddy\pprof\pprof.___go_build_main_go__4_.exe.samples.cpu.001.pb.gz

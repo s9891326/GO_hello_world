@@ -129,10 +129,11 @@ func ServeWs(hub *Hub, c *gin.Context) {
 		Send: make(chan *pb.Message),
 		Hub:  hub,
 	}
-	hub.Register <- client
+	fmt.Println(client.ID)
+	//hub.Register <- client
 
-	go client.WritePump()
-	go client.ReadPump()
+	//go client.WritePump()
+	//go client.ReadPump()
 }
 
 func websocketHandler(w http.ResponseWriter, r *http.Request) {
@@ -171,10 +172,12 @@ func NewHub() *Hub {
 }
 
 func main() {
+	// 只需要 WebSocket server → 用原生 net/http，程式更輕、更快
 	//http.HandleFunc("/ws", websocketHandler)
 	//fmt.Println("Server started at :8080")
 	//http.ListenAndServe(":8080", nil)
 
+	// WebSocket + REST API 混合服務 → 用 Gin，因為更容易管理 API 與 middleware。
 	hub := NewHub()
 	go hub.Run()
 
