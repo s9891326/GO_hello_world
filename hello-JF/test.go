@@ -24,7 +24,7 @@ func genRandomString() string {
 	return strings.ReplaceAll(now.Format("20060102150405.000000000"), ".", "")
 }
 
-func generateSign(data map[string]string) string {
+func generateSign(data map[string]any) string {
 	// 基于HMAC（Hash-based Message Authentication Code）的签名
 	// 1. 排序 keys
 	var keys []string
@@ -82,7 +82,7 @@ func createOrder(orderId string) {
 	// 	// "channel":           "payment_buildin_a2a",
 	// }
 
-	data := map[string]string{
+	data := map[string]any{
 		"transaction_type":  "income", // income(收入)/expense(支出)
 		"amount":            "20",
 		"merchant_order_id": orderId,
@@ -117,17 +117,32 @@ func createOrder(orderId string) {
 }
 
 func expenseOrder(orderId string) {
+	uuid, _ := generateUUID()
+
 	// 支出訂單
-	data := map[string]string{
+	// data := map[string]string{
+	// 	"transaction_type":  "expense", // income(收入)/expense(支出)
+	// 	"amount":            "5",
+	// 	"merchant_order_id": orderId,
+	// 	"merchant_uid":      uid,
+	// 	"currency":          "cny",
+	// 	"payment":           "a2a",
+	// 	"response_type":     "json",
+	// 	"country":           "China",
+	// 	"accounting_type":   "pay", //recharge(充值)/receive(收款)/pay(付款)/settle(结算)
+	// }
+
+	data := map[string]any{
 		"transaction_type":  "expense", // income(收入)/expense(支出)
 		"amount":            "5",
 		"merchant_order_id": orderId,
 		"merchant_uid":      uid,
-		"currency":          "cny",
+		"currency":          "mmk",
 		"payment":           "a2a",
 		"response_type":     "json",
 		"country":           "China",
 		"accounting_type":   "pay", //recharge(充值)/receive(收款)/pay(付款)/settle(结算)
+		"order_uid":         uuid,
 	}
 
 	sign := generateSign(data)
@@ -140,12 +155,13 @@ func expenseOrder(orderId string) {
 
 	fmt.Println("expense order data:", data, " header: ", header)
 
-	resp, err := httputil.DoPostRequest("https://demo.qc168.info/octopus/api/order/new", data, header)
+	// resp, err := httputil.DoPostRequest("https://demo.qc168.info/octopus/api/order/new", data, header)
+	resp, err := httputil.DoPostRequest("http://127.0.0.1:8011/new", data, header)
 	fmt.Println("expense order response:", resp, " err: ", err)
 }
 
 func queryOrder(orderId string) {
-	data := map[string]string{
+	data := map[string]any{
 		"merchant_uid": orderId,
 	}
 
@@ -162,13 +178,31 @@ func queryOrder(orderId string) {
 }
 
 func createPayAccount() {
-	data := map[string]string{
-		"channel":   "test", // income(收入)/expense(支出)
-		"username":  "test866",
-		"device_id": "device_001",
-		"enable":    "true",
-		"password":  "123456",
+	// data := map[string]any{
+	// 	"channel":  "test", // income(收入)/expense(支出)
+	// 	"username": "test866",
+	// 	"deviceid": "device_001",
+	// 	"enable":   true,
+	// 	"password": "123456",
+	// }
+
+	// fedmobile
+	data := map[string]any{
+		"channel":  "fedmobile",
+		"username": "918333075014",
+		"deviceid": "fed1",
+		"enable":   true,
+		"password": "8080",
+		"proxy":    "http://GEMDL5nh:i3xXRpay@34.14.128.242:8084",
 	}
+
+	// data := map[string]any{
+	// 	"channel":  "test", // income(收入)/expense(支出)
+	// 	"username": "917569790564",
+	// 	"deviceid": "device_002",
+	// 	"enable":   true,
+	// 	"password": "8080",
+	// }
 
 	header := map[string]string{
 		"Content-Type": "application/json",
@@ -181,14 +215,72 @@ func createPayAccount() {
 
 }
 
-func main() {
-	orderId := genRandomString()
-	fmt.Println("生成的訂單號:", orderId)
+func updatePayAccount() {
+	data := map[string]any{
+		"id":       89,
+		"username": "917032483253",
+		"deviceid": "device_001",
+		"enabled":  true,
+		"password": "2580",
+		"status":   "online",
+	}
+	// data := map[string]string{
+	// 	"channel":   "test", // income(收入)/expense(支出)
+	// 	"username":  "test866",
+	// 	"deviceid": "device_001",
+	// 	"password":  "123456",
+	// 	"enable":    "true",
+	// 	"status":    "online",
+	// 	// "si":        "123456",
+	// }
 
-	createPayAccount()
+	header := map[string]string{
+		"Content-Type": "application/json",
+	}
+
+	resp, err := httputil.DoPostRequest("http://127.0.0.1:8011/update_pay_account", data, header)
+	fmt.Println("update order response:", resp, " err: ", err)
+}
+
+func listTags() {
+	panic("unimplemented")
+}
+
+func createTags() {
+	data := map[string]any{
+		"name":             "payment_myanmar_tags.name", // income(收入)/expense(支出)
+		"target":           "test866",
+		"type":             "account",
+		"transaction_type": "123456",
+	}
+
+	header := map[string]string{
+		"Content-Type": "application/json",
+	}
+
+	resp, err := httputil.DoPostRequest("http://127.0.0.1:8011/add_tag", data, header)
+	fmt.Println("creeate tags response:", resp, " err: ", err)
+}
+
+func main() {
+	// orderId := genRandomString()
+	// fmt.Println("生成的訂單號:", orderId)
+
+	// 創建帳戶
+	// createPayAccount()
+
+	// 開啟帳戶
+	// updatePayAccount()
+
+	// 創建tags
+	// createTags()
+
+	// listTags()
 
 	// createOrder(orderId)
 	// queryOrder(orderId)
+
+	// expenseOrder(orderId)
 
 	// expenseOrder(orderId)
 	// queryOrder(orderId)

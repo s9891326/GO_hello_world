@@ -10,7 +10,7 @@ import (
 
 func DoPostRequest(
 	url string,
-	data map[string]string,
+	data map[string]any,
 	header map[string]string,
 ) (string, error) {
 	var req *http.Request
